@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice Translation UI</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <div class="top-text" id="transcript">Your Legal assistant!</div>
+    <div class="waveform">
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+    </div>
+    <div class="mic-section">
+      <div class="mic-icon" id="start-record">
+        <i class="fa fa-microphone"></i>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const startRecordButton = document.getElementById('start-record');
+    const transcriptDiv = document.getElementById('transcript');
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert('Speech Recognition API is not supported in this browser.');
+      throw new Error('Speech Recognition API is not supported in this browser.');
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US'; // Set language to English (United States)
+    recognition.interimResults = false; // We only care about final results
+    recognition.maxAlternatives = 1;
+
+    // API configuration
+    const API_KEY = 'AIzaSyC_1F8N1oLYOXvv_MJ21Yp0GlRU6ksT2R4'; // Replace with your valid API key
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
+
+    // Event listener for clicking the microphone icon
+    startRecordButton.addEventListener('click', () => {
+      recognition.start(); // Start listening
+      transcriptDiv.textContent = 'Listening...'; // Update the UI while listening
+    });
+
+    // Handle the recognition result and send it to Gemini API
+    recognition.onresult = async (event) => {
+      const speechResult = event.results[0][0].transcript;
+      transcriptDiv.textContent = `You said: "${speechResult}"`; // Display the user's speech
+      console.log('User speech:', speechResult);
+
+      // Send the text to Gemini API
+      try {
+        const responseText = await generateAPIResponse(speechResult);
+        //alert(`Response from Gemini: ${responseText}`);
+        speakResponse(responseText);
+      } catch (error) {
+        console.error('Error generating content from Gemini API:', error);
+        alert(`Error generating content: ${error.message}`); 
+      }
+    };
+
+    // Stop recognition when speech ends
+    recognition.onspeechend = () => {
+      recognition.stop();
+    };
+
+    // Error handling
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error detected:', event.error);
+      transcriptDiv.textContent = `Error: ${event.error}`;
+    };
+
+    // Function to send text to Google Gemini API and get a response
+    async function generateAPIResponse(inputText) {
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            contents: [{ 
+              role: "user", 
+              parts: [{ text: inputText }] 
+            }] 
+          }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error.message);
+
+        const apiResponse = data?.candidates[0]?.content?.parts[0]?.text.replace(/\*\*(.*?)\*\*/g, '$1');
+        return apiResponse;
+      } catch (error) {
+        console.error('Error generating content from Gemini API:', error);
+        alert(`Error generating content: ${error.message}`); // Show the error message
+        return 'Error generating response'; // Default error message
+      }
+    }
+
+    // Function to speak the Gemini response using Text-to-Speech
+    function speakResponse(responseText) {
+      const utterance = new SpeechSynthesisUtterance(responseText);
+      utterance.lang = 'en-US'; // Set the language for the speech
+      speechSynthesis.speak(utterance); // Speak the response
+    }
+  </script>
+</body>
+</html>
