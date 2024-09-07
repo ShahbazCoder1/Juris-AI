@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Voice Translation UI</title>
+  <title>NyayaBot</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
@@ -64,19 +64,12 @@
       playPauseButton.querySelector('i').className = isPlaying ? 'fa fa-pause' : 'fa fa-play';
     }
 
-    startRecordButton.addEventListener('click', () => {
-      recognition.start();
-      transcriptDiv.textContent = 'Listening...';
-      toggleUIState(true);
-    });
+    startRecordButton.addEventListener('click', startListening);
 
     cancelButton.addEventListener('click', () => {
       transcriptDiv.textContent = 'Your Legal Assistant';
       toggleUIState(false);
-      recognition.stop();
-      speechSynthesis.cancel();
-      isPlaying = false;
-      updatePlayPauseIcon(false);
+      stopEverything();
     });
 
     recognition.onresult = async (event) => {
@@ -100,7 +93,6 @@
       transcriptDiv.textContent = `Error: ${event.error}`;
     };
 
-    // Function to send text to Google Gemini API and get a response
     async function generateAPIResponse(inputText) {
       try {
         const response = await fetch(API_URL, {
@@ -130,7 +122,6 @@
       utterance = new SpeechSynthesisUtterance(responseText);
       utterance.lang = 'en-US';
 
-      // Set event listeners for utterance to control the play/pause state
       utterance.onstart = () => {
         isPlaying = true;
         updatePlayPauseIcon(true);
@@ -146,30 +137,37 @@
       updatePlayPauseIcon(true);
     }
 
-    playPauseButton.addEventListener('click', () => {
-  if (speechSynthesis.speaking && !speechSynthesis.paused) {
-    // If speaking and not paused, pause the speech
-    speechSynthesis.pause();
-    isPlaying = false;
-    updatePlayPauseIcon(false);
-  } else if (speechSynthesis.paused) {
-    // If paused, resume the speech
-    speechSynthesis.resume();
-    isPlaying = true;
-    updatePlayPauseIcon(true);
-  } else if (utterance && !speechSynthesis.speaking) {
-    // If not speaking (completed or canceled), replay the speech
-    speechSynthesis.speak(utterance);
-    isPlaying = true;
-    updatePlayPauseIcon(true);
-  } else {
-    // If no speech is ongoing or paused, start listening again
-    recognition.start();
-    transcriptDiv.textContent = 'Listening...';
-    toggleUIState(true);
-  }
-});
+    function startListening() {
+      recognition.start();
+      transcriptDiv.textContent = 'Listening...';
+      toggleUIState(true);
+    }
 
+    function stopEverything() {
+      recognition.stop();
+      speechSynthesis.cancel();
+      isPlaying = false;
+      updatePlayPauseIcon(false);
+    }
+
+    playPauseButton.addEventListener('click', () => {
+      if (speechSynthesis.speaking && !speechSynthesis.paused) {
+        // If speaking and not paused, pause the speech
+        speechSynthesis.pause();
+        isPlaying = false;
+        updatePlayPauseIcon(false);
+      } else if (speechSynthesis.paused) {
+        // If paused, start listening again instead of resuming
+        speechSynthesis.cancel(); // Cancel the paused speech
+        startListening();
+      } else if (!speechSynthesis.speaking && !recognition.running) {
+        // If not speaking and not listening, start listening
+        startListening();
+      } else {
+        // If already listening, do nothing (optional: provide feedback)
+        console.log("Already listening...");
+      }
+    });
   </script>
 </body>
 
