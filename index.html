@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,29 +8,37 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
+
 <body>
   <div class="container">
-    <div class="top-text" id="transcript">Your Legal assistant!</div>
+    <div class="top-text" id="transcript">NyayaBot</div>
     <div class="waveform">
-      <div class="wave"></div>
-      <div class="wave"></div>
-      <div class="wave"></div>
-      <div class="wave"></div>
-      <div class="wave"></div>
-      <div class="wave"></div>
-      <div class="wave"></div>
-      <div class="wave"></div>
+      <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script><lottie-player
+        src="https://lottie.host/cc6bf8d4-d323-4e5f-a5bd-ae90d29a4ad0/ZkxJA97ZO8.json" background="#101C48" speed="1"
+        style="width: 100%; height: 450px" direction="1" mode="normal" loop autoplay></lottie-player>
     </div>
     <div class="mic-section">
       <div class="mic-icon" id="start-record">
-        <i class="fa fa-microphone"></i>
+        <i class="fa fa-microphone" style="font-size: 30px;"></i>
       </div>
     </div>
   </div>
-
+  <div class="control-buttons" id="controls" style="display: none;">
+    <div class="control play" id="play-pause">
+      <i class="fa fa-play"></i>
+    </div>
+    <div class="control cancel" id="cancel-record">
+      <i class="fa fa-times"></i>
+    </div>
+  </div>
   <script>
     const startRecordButton = document.getElementById('start-record');
     const transcriptDiv = document.getElementById('transcript');
+    const playPauseButton = document.getElementById('play-pause');
+    const cancelButton = document.getElementById('cancel-record');
+    const controlsDiv = document.getElementById('controls');
+    let isPlaying = false;
+    let utterance = null;
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -38,43 +47,54 @@
     }
 
     const recognition = new SpeechRecognition();
-    recognition.lang = 'en-US'; // Set language to English (United States)
-    recognition.interimResults = false; // We only care about final results
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
     recognition.maxAlternatives = 1;
 
     // API configuration
     const API_KEY = 'AIzaSyC_1F8N1oLYOXvv_MJ21Yp0GlRU6ksT2R4'; // Replace with your valid API key
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
 
-    // Event listener for clicking the microphone icon
+    function toggleUIState(isRecording) {
+      startRecordButton.style.display = isRecording ? 'none' : 'flex';
+      controlsDiv.style.display = isRecording ? 'flex' : 'none';
+    }
+
+    function updatePlayPauseIcon(isPlaying) {
+      playPauseButton.querySelector('i').className = isPlaying ? 'fa fa-pause' : 'fa fa-play';
+    }
+
     startRecordButton.addEventListener('click', () => {
-      recognition.start(); // Start listening
-      transcriptDiv.textContent = 'Listening...'; // Update the UI while listening
+      recognition.start();
+      transcriptDiv.textContent = 'Listening...';
+      toggleUIState(true);
     });
 
-    // Handle the recognition result and send it to Gemini API
+    cancelButton.addEventListener('click', () => {
+      transcriptDiv.textContent = 'Your Legal Assistant';
+      toggleUIState(false);
+      recognition.stop();
+      speechSynthesis.cancel();
+      isPlaying = false;
+      updatePlayPauseIcon(false);
+    });
+
     recognition.onresult = async (event) => {
       const speechResult = event.results[0][0].transcript;
-      transcriptDiv.textContent = `You said: "${speechResult}"`; // Display the user's speech
+      transcriptDiv.textContent = `You said: "${speechResult}"`;
       console.log('User speech:', speechResult);
 
-      // Send the text to Gemini API
       try {
         const responseText = await generateAPIResponse(speechResult);
-        //alert(`Response from Gemini: ${responseText}`);
         speakResponse(responseText);
       } catch (error) {
         console.error('Error generating content from Gemini API:', error);
-        alert(`Error generating content: ${error.message}`); 
+        alert(`Error generating content: ${error.message}`);
       }
     };
 
-    // Stop recognition when speech ends
-    recognition.onspeechend = () => {
-      recognition.stop();
-    };
+    recognition.onspeechend = () => recognition.stop();
 
-    // Error handling
     recognition.onerror = (event) => {
       console.error('Speech recognition error detected:', event.error);
       transcriptDiv.textContent = `Error: ${event.error}`;
@@ -86,11 +106,11 @@
         const response = await fetch(API_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
-            contents: [{ 
-              role: "user", 
-              parts: [{ text: inputText }] 
-            }] 
+          body: JSON.stringify({
+            contents: [{
+              role: "user",
+              parts: [{ text: inputText }]
+            }]
           }),
         });
 
@@ -101,17 +121,50 @@
         return apiResponse;
       } catch (error) {
         console.error('Error generating content from Gemini API:', error);
-        alert(`Error generating content: ${error.message}`); // Show the error message
-        return 'Error generating response'; // Default error message
+        alert(`Error generating content: ${error.message}`);
+        return 'Error generating response';
       }
     }
 
-    // Function to speak the Gemini response using Text-to-Speech
     function speakResponse(responseText) {
-      const utterance = new SpeechSynthesisUtterance(responseText);
-      utterance.lang = 'en-US'; // Set the language for the speech
-      speechSynthesis.speak(utterance); // Speak the response
+      utterance = new SpeechSynthesisUtterance(responseText);
+      utterance.lang = 'en-US';
+
+      // Set event listeners for utterance to control the play/pause state
+      utterance.onstart = () => {
+        isPlaying = true;
+        updatePlayPauseIcon(true);
+      };
+
+      utterance.onend = () => {
+        isPlaying = false;
+        updatePlayPauseIcon(false);
+      };
+
+      speechSynthesis.speak(utterance);
+      isPlaying = true;
+      updatePlayPauseIcon(true);
     }
+
+    playPauseButton.addEventListener('click', () => {
+      if (speechSynthesis.speaking && !speechSynthesis.paused) {
+        // If speaking and not paused, pause the speech
+        speechSynthesis.pause();
+        isPlaying = false;
+        updatePlayPauseIcon(false);
+      } else if (speechSynthesis.paused) {
+        // If paused, resume the speech
+        speechSynthesis.resume();
+        isPlaying = true;
+        updatePlayPauseIcon(true);
+      } else if (utterance && !speechSynthesis.speaking) {
+        // If not speaking (completed or canceled), replay the speech
+        speechSynthesis.speak(utterance);
+        isPlaying = true;
+        updatePlayPauseIcon(true);
+      }
+    });
   </script>
 </body>
+
 </html>
