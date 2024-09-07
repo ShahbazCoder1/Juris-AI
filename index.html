@@ -147,23 +147,29 @@
     }
 
     playPauseButton.addEventListener('click', () => {
-      if (speechSynthesis.speaking && !speechSynthesis.paused) {
-        // If speaking and not paused, pause the speech
-        speechSynthesis.pause();
-        isPlaying = false;
-        updatePlayPauseIcon(false);
-      } else if (speechSynthesis.paused) {
-        // If paused, resume the speech
-        speechSynthesis.resume();
-        isPlaying = true;
-        updatePlayPauseIcon(true);
-      } else if (utterance && !speechSynthesis.speaking) {
-        // If not speaking (completed or canceled), replay the speech
-        speechSynthesis.speak(utterance);
-        isPlaying = true;
-        updatePlayPauseIcon(true);
-      }
-    });
+  if (speechSynthesis.speaking && !speechSynthesis.paused) {
+    // If speaking and not paused, pause the speech
+    speechSynthesis.pause();
+    isPlaying = false;
+    updatePlayPauseIcon(false);
+  } else if (speechSynthesis.paused) {
+    // If paused, resume the speech
+    speechSynthesis.resume();
+    isPlaying = true;
+    updatePlayPauseIcon(true);
+  } else if (utterance && !speechSynthesis.speaking) {
+    // If not speaking (completed or canceled), replay the speech
+    speechSynthesis.speak(utterance);
+    isPlaying = true;
+    updatePlayPauseIcon(true);
+  } else {
+    // If no speech is ongoing or paused, start listening again
+    recognition.start();
+    transcriptDiv.textContent = 'Listening...';
+    toggleUIState(true);
+  }
+});
+
   </script>
 </body>
 
