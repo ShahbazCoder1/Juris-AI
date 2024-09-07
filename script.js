@@ -104,6 +104,7 @@ function speakResponse(responseText) {
   utterance.onend = () => {
     isPlaying = false;
     updatePlayPauseIcon(false);
+    startListening();
   };
 
   speechSynthesis.speak(utterance);
