@@ -19,7 +19,7 @@ recognition.interimResults = false;
 recognition.maxAlternatives = 1;
 
 // API configuration
-const API_KEY = process.env.API_KEY; // Replace with your valid API key
+const API_KEY = "AIzaSyAXLx8gB48tMR7WCT-1YIdXAYyIwMK5s28"; // Replace with your valid API key
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
 
 function toggleUIState(isRecording) {
