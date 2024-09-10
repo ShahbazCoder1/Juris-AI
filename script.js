@@ -36,7 +36,7 @@ function updatePlayPauseIcon(isPlaying) {
 startRecordButton.addEventListener("click", startListening);
 
 cancelButton.addEventListener("click", () => {
-  transcriptDiv.textContent = "NyayaBot";
+  transcriptDiv.textContent = "Juris AI";
   toggleUIState(false);
   stopEverything();
 });
