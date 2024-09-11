@@ -1,53 +1,65 @@
-# NyayaBot
+# Juris AI: Voice Interactive Legal Assistant
 
-NyayaBot is a web-based legal assistant that utilizes speech recognition and text-to-speech capabilities to provide an interactive experience for users seeking legal information.
+Juris AI is an innovative voice-interactive chatbot designed to provide expert legal advice based on Indian laws and jurisdiction. This project demonstrates the integration of speech recognition, natural language processing, and text-to-speech technologies to create an accessible and user-friendly legal assistance tool.
 
 ## Features
 
-- Speech recognition for user input
-- Integration with the Gemini AI API for generating responses
-- Text-to-speech functionality for spoken responses
-- Interactive UI with microphone and playback controls
+- **Voice Interaction**: Users can speak their legal queries directly to the chatbot.
+- **Speech Recognition**: Utilizes the Web Speech API to convert user speech to text.
+- **AI-Powered Responses**: Integrates with the Gemini API to generate informed legal responses.
+- **Text-to-Speech**: Converts the AI-generated responses back into speech for a seamless interaction.
+- **Intuitive UI**: Simple interface with start, pause, and cancel controls.
+
+## Demo
+
+[Insert a link to your demo video here]
+
+## Screenshots
+
+[Insert one or more screenshots of your application here]
 
 ## Technologies Used
 
 - HTML5
 - CSS3
 - JavaScript
-- Web Speech API (Speech Recognition and Speech Synthesis)
-- Font Awesome for icons
-- Lottie for animations
-- Gemini AI API for content generation
+- Web Speech API
+- Gemini API
 
-## Setup
+## Setup and Installation
 
-1. Clone this repository to your local machine.
-2. Replace the `API_KEY` in the JavaScript code with your valid Gemini AI API key.
-3. Open the `index.html` file in a modern web browser that supports the Web Speech API.
+1. Clone the repository:
+   ```
+   git clone https://github.com/your-username/Juris-AI.git
+   ```
+
+2. Navigate to the project directory:
+   ```
+   cd Juris-AI
+   ```
+
+3. Open `script.js` and replace the `API_KEY` variable with your Gemini API key:
+   ```javascript
+   const API_KEY = "YOUR_API_KEY_HERE";
+   ```
+
+4. Open `index.html` in a modern web browser that supports the Web Speech API (e.g., Chrome, Edge, Safari).
 
 ## Usage
 
-1. Click on the microphone icon to start recording your question.
-2. Speak clearly into your microphone.
-3. The application will transcribe your speech and send it to the Gemini AI API.
-4. The AI-generated response will be read aloud using text-to-speech.
-5. Use the play/pause button to control the speech playback.
-6. Click the cancel button to stop the current interaction and start over.
-
-## Notes
-
-- This application requires an internet connection to function properly.
-- Ensure your browser has permission to access your microphone.
-- The speech recognition feature works best in a quiet environment.
-
-## Contributing
-
-Contributions to improve NyayaBot are welcome. Please feel free to submit pull requests or open issues to discuss potential enhancements.
+1. Click the microphone icon to start recording your voice.
+2. Speak your legal query clearly.
+3. Wait for the AI to process your query and generate a response.
+4. Listen to the spoken response or read it in the transcript area.
+5. Use the play/pause button to control audio playback.
+6. Click the cancel button to stop the current interaction and start a new one.
 
 ## License
 
-[Add your chosen license here]
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
-## Disclaimer
+## Acknowledgments
 
-NyayaBot is an AI-powered assistant and should not be considered a substitute for professional legal advice. Always consult with a qualified legal professional for specific legal matters.
+- Gemini API for powering the AI responses
+- [Lottie](https://lottiefiles.com/) for the animated waveform
+- Font Awesome for icons
