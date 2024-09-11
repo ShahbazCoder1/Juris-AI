@@ -12,7 +12,7 @@ Juris AI is an innovative voice-interactive chatbot designed to provide expert l
 
 ## Demo
 
-[Insert a link to your demo video here]
+[![NyayaBot Demo](https://img.youtube.com/vi/lkPTB3MxUCk/0.jpg)](https://youtu.be/lkPTB3MxUCk?si=CahQFJofHDGo9g7x)
 
 ## Screenshots
 
