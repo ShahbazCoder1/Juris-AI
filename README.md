@@ -16,7 +16,11 @@ Juris AI is an innovative voice-interactive chatbot designed to provide expert l
 
 ## Screenshots
 
-[Insert one or more screenshots of your application here]
+![NyayaBot Interface](https://github.com/ShahbazCoder1/Juris-AI/raw/main/Images/screenshot_JurisAI.jpg)
+*NyayaBot Main Interface*
+
+![NyayaBot Conversation](https://github.com/ShahbazCoder1/Juris-AI/raw/main/Images/screenshot_JurisAI_Convers.jpg)
+*NyayaBot Conversation Example*
 
 ## Technologies Used
 
@@ -25,6 +29,9 @@ Juris AI is an innovative voice-interactive chatbot designed to provide expert l
 - JavaScript
 - Web Speech API
 - Gemini API
+
+## Workflow
+![ ](https://github.com/ShahbazCoder1/Juris-AI/blob/main/Images/workflow.png)
 
 ## Setup and Installation
 
