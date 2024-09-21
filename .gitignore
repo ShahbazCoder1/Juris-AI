@@ -3,3 +3,6 @@
 package.json
 node_modules
 .env
+voice.html
+voice.css
+voice.js

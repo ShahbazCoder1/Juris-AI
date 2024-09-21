@@ -1,3 +1,28 @@
+document.getElementById('chat-button').addEventListener('click', function () {
+  document.getElementById('chat-box').style.display = 'flex';  // Show the chat box
+});
+
+document.getElementById('close-chat').addEventListener('click', function () {
+  document.getElementById('chat-box').style.display = 'none';  // Hide the chat box
+});
+
+document.getElementById('chat-tab').addEventListener('click', function () {
+  document.getElementById('chat-body').style.display = 'block';
+  document.getElementById('voice-body').style.display = 'none';
+  document.getElementById('chat-msg').style.display = 'flex';
+  this.classList.add('active');
+  document.getElementById('voice-tab').classList.remove('active');
+});
+
+document.getElementById('voice-tab').addEventListener('click', function () {
+  document.getElementById('voice-body').style.display = 'block';
+  document.getElementById('chat-body').style.display = 'none';
+  document.getElementById('chat-msg').style.display = 'none';
+  this.classList.add('active');
+  document.getElementById('chat-tab').classList.remove('active');
+});
+
+
 const startRecordButton = document.getElementById("start-record");
 const transcriptDiv = document.getElementById("transcript");
 const playPauseButton = document.getElementById("play-pause");
@@ -6,8 +31,7 @@ const controlsDiv = document.getElementById("controls");
 let isPlaying = false;
 let utterance = null;
 
-const SpeechRecognition =
-  window.SpeechRecognition || window.webkitSpeechRecognition;
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 if (!SpeechRecognition) {
   alert("Speech Recognition API is not supported in this browser.");
   throw new Error("Speech Recognition API is not supported in this browser.");
@@ -18,25 +42,19 @@ recognition.lang = "en-US";
 recognition.interimResults = false;
 recognition.maxAlternatives = 1;
 
-// API configuration
-const API_KEY = "AIzaSyAXLx8gB48tMR7WCT-1YIdXAYyIwMK5s28"; // Replace with your valid API key
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
-
 function toggleUIState(isRecording) {
   startRecordButton.style.display = isRecording ? "none" : "flex";
   controlsDiv.style.display = isRecording ? "flex" : "none";
 }
 
 function updatePlayPauseIcon(isPlaying) {
-  playPauseButton.querySelector("i").className = isPlaying
-    ? "fa fa-pause"
-    : "fa fa-play";
+  playPauseButton.querySelector("i").className = isPlaying ? "fa fa-pause" : "fa fa-play";
 }
 
 startRecordButton.addEventListener("click", startListening);
 
 cancelButton.addEventListener("click", () => {
-  transcriptDiv.textContent = "Juris AI";
+  transcriptDiv.textContent = "";
   toggleUIState(false);
   stopEverything();
 });
@@ -50,7 +68,7 @@ recognition.onresult = async (event) => {
     const responseText = await generateAPIResponse(speechResult);
     speakResponse(responseText);
   } catch (error) {
-    console.error("Error generating content from Gemini API:", error);
+    console.error("Error generating content from the server:", error);
     alert(`Error generating content: ${error.message}`);
   }
 };
@@ -63,58 +81,62 @@ recognition.onerror = (event) => {
 };
 
 async function generateAPIResponse(inputText) {
-    try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [
-            {
-              role: "user",
-              parts: [
-                {
-                  text: "As a renowned Indian lawyer with over a decade of experience in legal practice, you are here to provide expert legal advice in accordance with Indian laws and jurisdiction. Feel free to seek guidance on any legal matters you may have."
-                }
-              ]
-            },
-            {
-              role: "model",
-              parts: [
-                {
-                  text: "I understand. I am ready to assist you with your legal questions based on Indian laws and jurisdiction. Please tell me about your legal matter, and I will do my best to provide you with accurate and helpful information.\n\nFor a more accurate and tailored response, please provide as much detail as possible about your situation, including:\n\n* **The specific area of law:** Is it about family law, property law, criminal law, contract law, or something else?\n* **The nature of the issue:** What is the specific problem you are facing?\n* **The relevant facts:** Provide details about the events and individuals involved.\n* **Your desired outcome:** What are you hoping to achieve through legal action?\n\nRemember, I am an AI and cannot provide legal advice. My responses are for informational purposes only and should not be considered a substitute for professional legal counsel. Always consult with a qualified lawyer for specific legal advice.\n"
-                }
-              ]
-            },
-            {
-              role: "user",
-              parts: [
-                {
-                  text: inputText
-                }
-              ]
-            }
-          ]
-        }),
-      });
-  
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error.message);
-  
-      const apiResponse = data?.candidates[0]?.content?.parts[0]?.text?.replace(
-        /\*\*(.*?)\*\*/g,
-        "$1"
-      );
-      return apiResponse || "No response from API";
-    } catch (error) {
-      console.error("Error generating content from Gemini API:", error);
-      alert(`Error generating content: ${error.message}`);
-      return "Error generating response";
-    }
+  const API_KEY = "AIzaSyAXLx8gB48tMR7WCT-1YIdXAYyIwMK5s28";
+  const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
+
+  // Prepare the request payload
+  const payload = {
+    contents: [
+      {
+        role: "user",
+        parts: [
+          {
+            text: "As a renowned Indian lawyer with over a decade of experience in legal practice, you are here to provide expert legal advice in accordance with Indian laws and jurisdiction. Feel free to seek guidance on any legal matters you may have."
+          }
+        ]
+      },
+      {
+        role: "model",
+        parts: [
+          {
+            text: "I understand. I am ready to assist you with your legal questions based on Indian laws and jurisdiction. Please tell me about your legal matter, and I will do my best to provide you with accurate and helpful information."
+          }
+        ]
+      },
+      {
+        role: "user",
+        parts: [
+          {
+            text: inputText
+          }
+        ]
+      }
+    ]
+  };
+
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Failed to generate response');
+
+    const apiResponse = data.candidates[0].content.parts[0].text;
+
+    return apiResponse || "No response from server";
+  } catch (error) {
+    console.error("Error generating content from server:", error);
+    alert(`Error generating content: ${error.message}`);
+    return "Error generating response";
   }
-  
+}
 
 function speakResponse(responseText) {
-  utterance = new SpeechSynthesisUtterance(responseText);
+  const cleanedResponse = removeFormatting(responseText);
+  utterance = new SpeechSynthesisUtterance(cleanedResponse);
   utterance.lang = "en-US";
 
   utterance.onstart = () => {
@@ -148,19 +170,232 @@ function stopEverything() {
 
 playPauseButton.addEventListener("click", () => {
   if (speechSynthesis.speaking && !speechSynthesis.paused) {
-    // If speaking and not paused, pause the speech
     speechSynthesis.pause();
     isPlaying = false;
     updatePlayPauseIcon(false);
   } else if (speechSynthesis.paused) {
-    // If paused, start listening again instead of resuming
-    speechSynthesis.cancel(); // Cancel the paused speech
+    speechSynthesis.cancel();
     startListening();
   } else if (!speechSynthesis.speaking && !recognition.running) {
-    // If not speaking and not listening, start listening
     startListening();
   } else {
-    // If already listening, do nothing (optional: provide feedback)
     console.log("Already listening...");
   }
+});
+
+function removeFormatting(text) {
+  return text
+    .replace(/\*{1,2}/g, '')
+    .replace(/_{1,2}/g, '')
+    .replace(/`+/g, '')
+    .replace(/<\/?[^>]+(>|$)/g, '');
+}
+
+// Chat functionality
+document.addEventListener('DOMContentLoaded', () => {
+  const chatBody = document.getElementById('chat-body');
+  const chatInput = document.getElementById('chat-input');
+  const sendBtn = document.querySelector('.chat-footer button');
+  const chatContainer = document.querySelector('.chat-container');
+  const quickReplyButtons = document.querySelectorAll('.quick-reply-btn');
+
+  // Helper function to display the AI response in real-time (typing effect)
+  function typeMessage(targetElement, message, delay = 20) {
+    let i = 0;
+    const typingInterval = setInterval(() => {
+      if (i < message.length) {
+        targetElement.textContent += message.charAt(i);
+        i++;
+      } else {
+        clearInterval(typingInterval);
+      }
+    }, delay);
+  }
+
+  function appendMessage(content, role) {
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message', role);
+
+    const bubbleDiv = document.createElement('div');
+    bubbleDiv.classList.add('message-bubble');
+    messageDiv.appendChild(bubbleDiv);
+
+    // Add like, dislike, and copy buttons for AI response
+    if (role === 'ai') {
+      const buttonsDiv = document.createElement('div');
+      buttonsDiv.classList.add('message-buttons');
+
+      buttonsDiv.innerHTML = `
+        <button class="like-btn">
+            <i class="fas fa-thumbs-up"></i>
+        </button>
+        <button class="dislike-btn">
+            <i class="fas fa-thumbs-down"></i>
+        </button>
+        <button class="copy-btn">
+            <i class="fas fa-copy"></i>
+        </button>
+      `;
+
+      messageDiv.appendChild(buttonsDiv);
+
+      // Add functionality for copy to clipboard
+      buttonsDiv.querySelector('.copy-btn').addEventListener('click', () => {
+        navigator.clipboard.writeText(content);
+        alert('Text copied to clipboard!');
+      });
+
+      // Like button functionality
+      buttonsDiv.querySelector('.like-btn').addEventListener('click', () => {
+        const likeBtn = buttonsDiv.querySelector('.like-btn');
+        likeBtn.style.color = 'blue'; // Change color to indicate like
+        likeBtn.disabled = true; // Disable button after liking
+      });
+
+      // Dislike button functionality
+      buttonsDiv.querySelector('.dislike-btn').addEventListener('click', () => {
+        const dislikeBtn = buttonsDiv.querySelector('.dislike-btn');
+        dislikeBtn.style.color = 'red'; // Change color to indicate dislike
+        dislikeBtn.disabled = true; // Disable button after disliking
+        openReportModal(content); // Open report modal
+      });
+    }
+
+    chatBody.appendChild(messageDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    if (role === 'ai') {
+      typeMessage(bubbleDiv, content); // Show AI message in typing effect
+    } else {
+      bubbleDiv.textContent = content; // Show user message immediately
+    }
+  }
+
+  function openReportModal(content) {
+    const modal = document.createElement('div');
+    modal.classList.add('modal');
+
+    const modalContent = document.createElement('div');
+    modalContent.classList.add('modal-content');
+    modalContent.innerHTML = `
+      <span class="close-button">&times;</span>
+      <h4>Report this response?</h4>
+      <textarea rows="4" placeholder="Enter report message here..."></textarea>
+      <button class="submit-report">Submit</button>
+    `;
+
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+
+    // Close modal when clicking the close button
+    modal.querySelector('.close-button').addEventListener('click', () => {
+      modal.remove();
+    });
+
+    // Add event listener to the submit button
+    modal.querySelector('.submit-report').addEventListener('click', () => {
+      alert('Thank you for your feedback!'); // Dummy submit action
+      modal.remove(); // Remove the modal after submission
+    });
+
+    // Close modal when clicking outside the modal content
+    window.addEventListener('click', (event) => {
+      if (event.target === modal) {
+        modal.remove();
+      }
+    });
+  }
+
+  // Hide the chat-container
+  function hideChatContainer() {
+    chatContainer.style.display = 'none';
+  }
+
+  async function sendMessage(inputText) {
+    appendMessage(inputText, 'user');
+    hideChatContainer(); // Hide the chat-container after sending the first message
+  
+    const API_KEY = "AIzaSyAXLx8gB48tMR7WCT-1YIdXAYyIwMK5s28";
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
+  
+    // Prepare the request payload
+    const payload = {
+      contents: [
+        {
+          role: "user",
+          parts: [
+            {
+              text: "As a renowned Indian lawyer with over a decade of experience in legal practice, you are here to provide expert legal advice in accordance with Indian laws and jurisdiction. Feel free to seek guidance on any legal matters you may have."
+            }
+          ]
+        },
+        {
+          role: "model",
+          parts: [
+            {
+              text: "I understand. I am ready to assist you with your legal questions based on Indian laws and jurisdiction. Please tell me about your legal matter, and I will do my best to provide you with accurate and helpful information."
+            }
+          ]
+        },
+        {
+          role: "user",
+          parts: [
+            {
+              text: inputText
+            }
+          ]
+        }
+      ]
+    };
+  
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      const cleanedResponse = removeFormatting(data.candidates[0].content.parts[0].text);
+      appendMessage(cleanedResponse, 'ai'); // Display AI response with typing effect
+    } catch (error) {
+      console.error('Error:', error);
+      appendMessage('Error: Unable to fetch response.', 'ai');
+    }
+  }
+  
+
+  // Send message when the user types and clicks "Send"
+  sendBtn.addEventListener('click', () => {
+    const inputText = chatInput.value.trim();
+    if (!inputText) return;
+    sendMessage(inputText);
+    chatInput.value = ''; 
+  });
+
+  // Handle 'Enter' key to send the message
+  chatInput.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      const inputText = chatInput.value.trim();
+      if (!inputText) return;
+      sendMessage(inputText);
+      chatInput.value = ''; 
+    }
+  });
+
+  // Send quick reply when clicked
+  quickReplyButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const quickReplyText = button.textContent.trim();
+      sendMessage(quickReplyText);
+      hideChatContainer(); 
+    });
+  });
 });

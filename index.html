@@ -2,35 +2,135 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Juris AI</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <div class="container">
-    <div class="top-text" id="transcript">Juris AI</div>
-    <div class="waveform">
-      <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script><lottie-player
-        src="https://lottie.host/cc6bf8d4-d323-4e5f-a5bd-ae90d29a4ad0/ZkxJA97ZO8.json" background="#101C48" speed="1"
-        style="width: 100%; height: 450px" direction="1" mode="normal" loop autoplay></lottie-player>
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <img src="static/logo.svg" alt="Department of Justice Logo" style="width: 60px; height: auto;">
+            </div>
+            <div class="department-title">
+                <h1>Department of Justice</h1>
+                <h2>Ministry of Law and Justice, Government of India</h2>
+            </div>
+            <div class="language-switch">
+                <a href="#">English</a>
+            </div>
+        </div>
+
+        <nav class="main-nav">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Administration of Justice</a></li>
+                <li><a href="#">National Mission</a></li>
+                <li><a href="#">eCourts MMP</a></li>
+                <li><a href="#">Access to Justice</a></li>
+                <li><a href="#">Samvidhan@75</a></li>
+                <li><a href="#">Media Corner</a></li>
+            </ul>
+        </nav>
+    </header>
+    <!--
+    <div class="scrolling-text">
+        <p>This is a beta product. Some features may not work as expected.</p>
+    </div>-->
+
+    <main>
+        <section class="problem-statement">
+            <h3>Problem Statement Details</h3>
+            <div class="problem-content">
+                <p><strong>Problem Statement ID:</strong> 1700</p>
+                <p><strong>Problem Statement Title:</strong> Developing an AI-based interactive Chatbot or Virtual
+                    Assistant for the Department of Justice’s Website.</p>
+                <p><strong>Theme:</strong> Smart Automation</p>
+                <p><strong>PS Category:</strong> Software</p>
+                <p><strong>Team ID:</strong> 31187</p>
+                <p><strong>Team Name (Registered on portal):</strong> LawTech Coders</p>
+            </div>
+        </section>
+    </main>
+
+    <div class="fab" id="chat-button">
+        <img src="static/fab.png" alt="Chat Icon">
     </div>
-    <div class="mic-section">
-      <div class="mic-icon" id="start-record">
-        <i class="fa fa-microphone" style="font-size: 30px;"></i>
-      </div>
+
+    <!-- Chat Box -->
+    <div class="chat-box" id="chat-box">
+        <div class="chat-header">
+            <div class="agent-info">
+                <img src="static/team.png" alt="Agent" class="agent-img">
+                <div>
+                    <h3>Juris AI</h3>
+                </div>
+            </div>
+            <div class="icon-container">
+                <!--<img src="static/enlarge.png" alt="Chat Icon" style="width: 24px; height: auto;" class="enlarge-icon"> -->
+                <span id="close-chat">&times;</span>
+            </div>
+        </div>
+        <!-- Tab Bar for switching modes -->
+        <div class="tab-bar">
+            <button class="tab-button active" id="chat-tab">Chat Mode</button>
+            <button class="tab-button" id="voice-tab">Voice Mode</button>
+        </div>
+
+        <!--Chat Mode-->
+        <div class="chat-body" id="chat-body">
+            <div class="chat-container">
+                <h1 class="greeting">Namaste🙏, How can we assist you today?</h1>
+                <div class="quick-replies">
+                    <button class="quick-reply-btn">What is FIR?</button>
+                    <button class="quick-reply-btn">What is the legal age of consent in India?</button>
+                    <button class="quick-reply-btn">What are the basic rights of a tenant in India?</button>
+                    <button class="quick-reply-btn">What are the specific regulations regarding land
+                        conversion?</button>
+                </div>
+            </div>
+        </div>
+
+        <!--Voice Mode-->
+        <div class="voice-body" id="voice-body" style="display: none;">
+            <div class="container">
+                <div class="top-text" id="transcript"></div>
+                <div class="waveform">
+                    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+                    <lottie-player src="https://lottie.host/cc6bf8d4-d323-4e5f-a5bd-ae90d29a4ad0/ZkxJA97ZO8.json"
+                        background="#ffffff" speed="1" style="width: 90%; height: 245px; margin-bottom: 10px;" direction="1" mode="normal"
+                        loop autoplay></lottie-player>
+                </div>
+                <div class="mic-section">
+                    <div class="mic-icon" id="start-record">
+                        <i class="fa fa-microphone" style="font-size: 30px;"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="control-buttons" id="controls" style="display: none;">
+                <div class="control play" id="play-pause">
+                    <i class="fa fa-play"></i>
+                </div>
+                <div class="control cancel" id="cancel-record">
+                    <i class="fa fa-times"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-footer" id="chat-msg">
+            <div class="input-container">
+                <input type="text" class="prompt-input" placeholder="Ask me anything" id="chat-input">
+                <button class="send-button">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="control-buttons" id="controls" style="display: none;">
-    <div class="control play" id="play-pause">
-      <i class="fa fa-play"></i>
-    </div>
-    <div class="control cancel" id="cancel-record">
-      <i class="fa fa-times"></i>
-    </div>
-  </div>
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>
