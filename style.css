@@ -580,7 +580,7 @@ main {
   background-color: white;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 30px;
+  padding: 20px;
   max-width: 800px;
   width: 90%;
 }
@@ -603,28 +603,40 @@ main {
   color: #003366;
 }
 
-.scrolling-text {
-  background-color: #ffbf00;
-  color: black;
+.header-with-logos {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.logop {
+  width: 50px;
+  height: 50px;
+}
+
+.marq {
+  display: flex;
+  align-items: center;
+  height: 30px;
   overflow: hidden;
+}
+
+.marq p {
+  margin: 0;
+  padding: 0;
   white-space: nowrap;
-  padding: 10px 0;
 }
 
-.scrolling-text p {
-  display: inline-block;
-  
-  animation: scroll-text 20s linear infinite;
-  font-size: 16px;
+/* Optional: Adjust text color for better contrast with the background */
+.marq {
+  color: #000000; /* Black text color */
 }
 
-@keyframes scroll-text {
-  0% {
-      transform: translateX(100%);
-  }
-  100% {
-      transform: translateX(-100%);
-  }
+/* Optional: Add some padding to the sides if needed */
+.marq {
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 
