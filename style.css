@@ -692,6 +692,7 @@ main {
     display: flex;
     flex-direction: column;
     width: fit-content;
+    width: 70%;
   }
 
   .department-title h1 {
@@ -702,9 +703,13 @@ main {
 
   .department-title h2 {
     margin: 0;
-    color: #333;
-    font-weight: normal;
+    color: #000;
     text-align: left;
+    white-space: nowrap;  
+    overflow: hidden;        
+    text-overflow: ellipsis;  
+    font-weight: normal;
+    max-width: 100%;
   }
 
   .language-switch {
@@ -734,26 +739,6 @@ main {
     cursor: pointer;
     text-align: center;
   }
-
-
-  /*
-.navbar {
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 10px;
-}
-
-.department-title {
-  margin: 10px 0;
-}
-
-.department-title h1 {
-  font-size: 20px;
-}
-
-.department-title h2 {
-  font-size: 12px;
-} */
 
   .language-switch {
     display: none;
