@@ -677,7 +677,7 @@ main {
   /* Styling for the logo, title, and language switch */
   .logo-and-title {
     display: flex;
-    justify-content: unset;
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
   }
