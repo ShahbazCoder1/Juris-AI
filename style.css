@@ -36,7 +36,7 @@ header {
 }
 
 .department-title h2 {
-  font-size: clamp(10px, 3vw, 14px);
+  font-size: clamp(7px, 3vw, 14px);
   color: #555;
   text-align: center;
 }
