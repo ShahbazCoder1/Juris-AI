@@ -1,11 +1,10 @@
-document.addEventListener('DOMContentLoaded', function() {
-  const menuToggle = document.querySelector('.menu-toggle');
-  const navLinks = document.querySelector('.nav-links');
+const menuToggle = document.querySelector('.menu-toggle');
+const navLinks = document.querySelector('.nav-links');
 
-  menuToggle.addEventListener('click', function() {
-    navLinks.classList.toggle('active');
-  });
+menuToggle.addEventListener('click', function () {
+  navLinks.classList.toggle('active');
 });
+
 
 document.getElementById('chat-button').addEventListener('click', function () {
   document.getElementById('chat-box').style.display = 'flex';  // Show the chat box
@@ -323,10 +322,10 @@ document.addEventListener('DOMContentLoaded', () => {
   async function sendMessage(inputText) {
     appendMessage(inputText, 'user');
     hideChatContainer(); // Hide the chat-container after sending the first message
-  
+
     const API_KEY = "AIzaSyAXLx8gB48tMR7WCT-1YIdXAYyIwMK5s28";
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
-  
+
     // Prepare the request payload
     const payload = {
       contents: [
@@ -356,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       ]
     };
-  
+
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -365,11 +364,11 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         body: JSON.stringify(payload),
       });
-  
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-  
+
       const data = await response.json();
       const cleanedResponse = removeFormatting(data.candidates[0].content.parts[0].text);
       appendMessage(cleanedResponse, 'ai'); // Display AI response with typing effect
@@ -378,14 +377,14 @@ document.addEventListener('DOMContentLoaded', () => {
       appendMessage('Error: Unable to fetch response.', 'ai');
     }
   }
-  
+
 
   // Send message when the user types and clicks "Send"
   sendBtn.addEventListener('click', () => {
     const inputText = chatInput.value.trim();
     if (!inputText) return;
     sendMessage(inputText);
-    chatInput.value = ''; 
+    chatInput.value = '';
   });
 
   // Handle 'Enter' key to send the message
@@ -395,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const inputText = chatInput.value.trim();
       if (!inputText) return;
       sendMessage(inputText);
-      chatInput.value = ''; 
+      chatInput.value = '';
     }
   });
 
@@ -404,7 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
     button.addEventListener('click', () => {
       const quickReplyText = button.textContent.trim();
       sendMessage(quickReplyText);
-      hideChatContainer(); 
+      hideChatContainer();
     });
   });
 });
