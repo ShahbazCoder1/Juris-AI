@@ -15,7 +15,7 @@ header {
 }
 
 /* Top Navbar styling */
-.navbar {
+.navbar .logo-and-title {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -713,6 +713,7 @@ main {
     background: none;
     border: none;
     font-size: 24px;
+    margin-left: 3px;
     cursor: pointer;
     text-align: center;
   }
