@@ -15,7 +15,7 @@ header {
 }
 
 /* Top Navbar styling */
-.navbar .logo-and-title {
+.navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -24,6 +24,22 @@ header {
   border-bottom: 3px solid #ddd;
   flex-wrap: wrap;
 }
+
+.logo-and-title{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
 
 .logo img {
   width: 60px;
@@ -661,6 +677,7 @@ main {
   /* Styling for the logo, title, and language switch */
   .logo-and-title {
     display: flex;
+    justify-content: stretch;
     align-items: center;
     width: 100%;
   }
