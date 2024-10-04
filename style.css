@@ -21,6 +21,7 @@ header {
   background-color: #fff;
   padding: 10px 30px;
   border-bottom: 3px solid #ddd;
+  flex-wrap: wrap;
 }
 
 .logo img {
@@ -52,17 +53,17 @@ header {
   padding: 10px;
 }
 
-.main-nav ul {
+.nav-links {
   display: flex;
   justify-content: space-around;
   list-style-type: none;
 }
 
-.main-nav ul li {
+.nav-links li {
   position: relative;
 }
 
-.main-nav ul li a {
+.nav-links li a {
   text-decoration: none;
   color: #000;
   font-weight: bold;
@@ -72,27 +73,18 @@ header {
   font-size: 14px;
 }
 
-.main-nav ul li a:hover {
+.nav-links li a:hover {
   background-color: #ffbf00;
 }
 
-/* Dropdown menu (if needed) */
-.main-nav ul li:hover ul {
-  display: block;
-}
-
-.main-nav ul li ul {
+.menu-toggle {
   display: none;
-  position: absolute;
-  background-color: #f4d03f;
-  padding: 10px;
-  list-style-type: none;
+  background: none;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
 }
 
-.main-nav ul li ul li a {
-  padding: 5px 20px;
-  text-align: left;
-}
 
 /* Floating Action Button (FAB) */
 .fab {
@@ -642,23 +634,183 @@ main {
 
 /* Media Query for small screens */
 @media screen and (max-width: 600px) {
+
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #fff;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.logo-and-title {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    width: 60px;
+    height: auto;
+    margin-right: 0px;
+}
+
+.department-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.department-title h1 {
+    font-size: 20px;
+    margin: 0;
+    color: #000;
+    text-align: left;
+}
+
+.department-title h2 {
+    font-size: 12px;
+    margin: 0;
+    color: #333;
+    font-weight: normal;
+    text-align: left;
+}
+
+.menu-toggle {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/*
+.navbar {
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px;
+}
+
+.department-title {
+  margin: 10px 0;
+}
+
+.department-title h1 {
+  font-size: 20px;
+}
+
+.department-title h2 {
+  font-size: 12px;
+} */
+
+.language-switch {
+display: none;
+}
+
+.menu-toggle {
+  display: block;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+  .main-nav {
+    width: 100%;
+    padding: 0;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background-color: hsl(37, 31%, 90%);
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+
+  .nav-links li {
+    text-align: center;
+  }
+
+  .nav-links li a {
+    padding: 15px;
+    font-size: 16px;
+  }
+
+
+  .fab {
+    width: 50px;
+    height: 50px;
+  }
+
+  .fab img {
+    width: 25px;
+    height: 25px;
+  }
+
   .chat-box {
-      width: 90%;
-      right: 5%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    display: none;
   }
 
-  .mic-icon {
-      width: 50px;
-      height: 50px;
-      font-size: 30px;
+  .chat-box.active {
+    display: flex;
   }
 
-  .control {
-      width: 50px;
-      height: 50px;
+  .chat-header {
+    border-radius: 0;
   }
 
-  .control-buttons {
-      gap: 20px;
+  .chat-body {
+    max-height: none;
+    flex-grow: 1;
   }
+
+  .voice-body {
+    max-height: none;
+    height: auto;
+    flex-grow: 1;
+  }
+
+  .chat-footer {
+    border-radius: 0;
+  }
+
+  .quick-replies {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .input-container {
+    max-width: 100%;
+  }
+
+  .problem-statement {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .problem-content {
+    font-size: 16px;
+  }
+
+  .header-with-logos {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .logop {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.chat-box {
+  transition: all 0.3s ease-in-out;
 }

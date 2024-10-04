@@ -13,7 +13,7 @@
     <header>
         <div class="navbar">
             <div class="logo">
-                <img src="Images/logo.svg" alt="Department of Justice Logo" style="width: 60px; height: auto;">
+                <img src="Images/logo.svg" alt="Department of Justice Logo">
             </div>
             <div class="department-title">
                 <h1>Department of Justice</h1>
@@ -22,10 +22,11 @@
             <div class="language-switch">
                 <a href="#">English</a>
             </div>
+            <button class="menu-toggle" aria-label="Toggle Menu">&#9776;</button> <!-- Hamburger Menu -->
         </div>
-
+    
         <nav class="main-nav">
-            <ul>
+            <ul class="nav-links">
                 <li><a href="#">Home</a></li>
                 <li><a href="#">About Us</a></li>
                 <li><a href="#">Administration of Justice</a></li>
@@ -55,9 +56,12 @@
                 <p><strong>Team Name:</strong> SIT LawTech Coders</p>
                 <p><strong>Product Name:</strong> Juris AI</p>
             </div>
-            <marquee class="marq" bgcolor="#ffbf00" 
-                 direction="left" loop="" height="30px">
-                 <p>This is a working prototype of our product, Juris AI. Please be aware that AI-generated responses may be inaccurate as we have not yet fully fine-tuned the AI to meet our specific requirements. Rest assured, the AI will be properly fine-tuned for the production-level product. Additionally, please note that this demo version does not include all the features we have planned for the final release.</p>
+            <marquee class="marq" bgcolor="#ffbf00" direction="left" loop="" height="30px">
+                <p>This is a working prototype of our product, Juris AI. Please be aware that AI-generated responses may
+                    be inaccurate as we have not yet fully fine-tuned the AI to meet our specific requirements. Rest
+                    assured, the AI will be properly fine-tuned for the production-level product. Additionally, please
+                    note that this demo version does not include all the features we have planned for the final release.
+                </p>
             </marquee>
     </main>
 
@@ -106,8 +110,8 @@
                 <div class="waveform">
                     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
                     <lottie-player src="https://lottie.host/035d6e35-52ff-44d5-9a2b-8636ca6a657f/LVHuP4Bzzr.json"
-                        background="#ffffff" speed="1" style="width: 90%; height: 245px; margin-bottom: 10px;" direction="1" mode="normal"
-                        loop autoplay></lottie-player>
+                        background="#ffffff" speed="1" style="width: 90%; height: 245px; margin-bottom: 10px;"
+                        direction="1" mode="normal" loop autoplay></lottie-player>
                 </div>
                 <div class="mic-section">
                     <div class="mic-icon" id="start-record">
