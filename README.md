@@ -1,6 +1,6 @@
-# Juris AI: Voice Interactive Legal Assistant
+# Juris AI - An AI-based interactive Chatbot/Virtual Assistant for the Department of Justice's Website
 
-Juris AI is an innovative voice-interactive chatbot designed to provide expert legal advice based on Indian laws and jurisdiction. This project demonstrates the integration of speech recognition, natural language processing, and text-to-speech technologies to create an accessible and user-friendly legal assistance tool.
+This prototype showcases an AI-powered legal assistant, "Juris AI," that allows users to interact via both voice and text commands. It utilizes speech recognition, text-to-speech technology, and the Gemini API to provide legal guidance based on Indian laws. Users can ask legal questions through voice or chat modes and receive relevant responses either in text or spoken form.
 
 ## Features
 
