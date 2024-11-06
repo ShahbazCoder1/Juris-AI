@@ -12,7 +12,7 @@ This prototype showcases an AI-powered legal assistant, "Juris AI," that allows 
 
 ## Demo
 
-[![NyayaBot Demo](https://img.youtube.com/vi/lkPTB3MxUCk/0.jpg)](https://youtu.be/lkPTB3MxUCk?si=CahQFJofHDGo9g7x)
+[![NyayaBot Demo](https://img.youtube.com/vi/J2gA6G6U2ro/0.jpg)](https://youtu.be/J2gA6G6U2ro)
 
 ## Technologies Used
 
