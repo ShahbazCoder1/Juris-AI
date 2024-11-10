@@ -4,7 +4,7 @@
   "description": "This prototype showcases an AI-powered legal assistant, \"Juris AI,\" that allows users to interact via both voice and text commands. It utilizes speech recognition, text-to-speech technology, and the Gemini API to provide legal guidance based on Indian laws. Users can ask legal questions through voice or chat modes and receive relevant responses either in text or spoken form.",
   "main": "script.js",
   "scripts": {
-    "deploy": "gh-pages -d . -r https://$GH_TOKEN@github.com/ShahbazCoder1/Juris-AI.git"
+    "deploy": "main -d . -r https://$GH_TOKEN@github.com/ShahbazCoder1/Juris-AI.git"
   },
   "devDependencies": {
     "gh-pages": "^6.2.0"
