@@ -22,11 +22,14 @@ jobs:
       - name: Set Git user identity
         run: |
           git config --global user.name "ShahbazCoder1"
-          git config --global user.email "shahbazhashmi14a@gmail.com"  # Use GitHub's default email
+          git config --global user.email "shahbazhashmi14a@gmail.com"  # Use your GitHub email
+
+      - name: Set up Git authentication for GitHub Pages
+        run: git config --global url."https://${{ secrets.API_KEY }}@github.com/".insteadOf "https://github.com/"  # Set authentication for pushing to GitHub
 
       - name: Deploy to GitHub Pages
         run: |
           echo "Deploying to GitHub Pages"
-          GH_TOKEN=${{ secrets.API_KEY }} npm run deploy  # Pass the GitHub token to gh-pages
+          npm run deploy  # Run the deploy script defined in package.json
         env:
-          GH_TOKEN: ${{ secrets.API_KEY }}  # GitHub automatically provides this token to authenticate the deployment
+          GH_TOKEN: ${{ secrets.API_KEY }}  # Use GitHub's provided token for authentication
