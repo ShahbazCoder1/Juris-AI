@@ -3,33 +3,30 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # Trigger deployment on push to the main branch
+      - main  # Change this to your default branch if it's not 'main'
 
 jobs:
-  build:
-    runs-on: ubuntu-latest  # Use the latest Ubuntu image for the runner
+  build-and-deploy:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2  # Checkout the repository's code
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2  # Set up Node.js to run npm commands
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'  # Specify the Node.js version you need
 
-      - name: Install dependencies
-        run: npm install  # Install the dependencies defined in package.json
+    - name: Install dependencies
+      run: npm ci
 
-      - name: Set Git user identity
-        run: |
-          git config --global user.name "ShahbazCoder1"
-          git config --global user.email "shahbazhashmi14a@gmail.com"  # Use your GitHub email
+    - name: Build project
+      run: npm run build  # Make sure this is the correct build command
 
-      - name: Set up Git authentication for GitHub Pages
-        run: git config --global url."https://${{ secrets.API_KEY }}@github.com/".insteadOf "https://github.com/"  # Set authentication for pushing to GitHub
-
-      - name: Deploy to GitHub Pages
-        run: |
-          echo "Deploying to GitHub Pages"
-          npm run deploy  # Run the deploy script defined in package.json
-        env:
-          GH_TOKEN: ${{ secrets.API_KEY }}  # Use GitHub's provided token for authentication
+    - name: Deploy to GitHub Pages
+      env:
+        GH_TOKEN: ${{ secrets.API_KEY }}  # Ensure 'API_KEY' is correctly set in the repository secrets
+      run: |
+        echo "Deploying to GitHub Pages"
+        npx gh-pages -d dist  
