@@ -19,6 +19,11 @@ jobs:
       - name: Install dependencies
         run: npm install  # Install the dependencies defined in package.json
 
+      - name: Set Git user identity
+        run: |
+          git config --global user.name "ShahbazCoder1"
+          git config --global user.email "shahbazhashmi14a@gmail.com"  # Use GitHub's default email
+
       - name: Deploy to GitHub Pages
         run: npm run deploy  # Run the deploy script defined in package.json
         env:
