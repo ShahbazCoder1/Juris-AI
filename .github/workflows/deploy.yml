@@ -26,10 +26,6 @@ jobs:
         git config --global user.name "ShahbazCoder1"
         git config --global user.email "shahbazhashmi14a@gmail.com"
 
-    # If a build step is required
-    # - name: Build project
-    #   run: npm run build
-
     - name: Deploy to GitHub Pages
       env:
         GH_TOKEN: ${{ secrets.API_KEY }}  # Ensure 'API_KEY' is set in the repository secrets
