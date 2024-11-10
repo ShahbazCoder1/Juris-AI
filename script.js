@@ -89,56 +89,60 @@ recognition.onerror = (event) => {
 };
 
 async function generateAPIResponse(inputText) {
-  const API_KEY = "AIzaSyAXLx8gB48tMR7WCT-1YIdXAYyIwMK5s28";
-  const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key=${API_KEY}`;
+  const API_KEY = " ";
+  const API_URL = "https://models.inference.ai.azure.com/chat/completions";
 
   // Prepare the request payload
   const payload = {
-    contents: [
+    messages: [
       {
-        role: "user",
-        parts: [
-          {
-            text: "As a renowned Indian lawyer with over a decade of experience in legal practice, you are here to provide expert legal advice in accordance with Indian laws and jurisdiction. Feel free to seek guidance on any legal matters you may have."
-          }
-        ]
+        role: "system",
+        content: "As a renowned Indian lawyer with over a decade of experience in legal practice, you are here to provide expert legal advice in accordance with Indian laws and jurisdiction. Feel free to seek guidance on any legal matters you may have. You are also able to comunicate in English, Hindi and Hindlish"
       },
       {
-        role: "model",
-        parts: [
-          {
-            text: "I understand. I am ready to assist you with your legal questions based on Indian laws and jurisdiction. Please tell me about your legal matter, and I will do my best to provide you with accurate and helpful information."
-          }
-        ]
+        role: "assistant",
+        content: "I'm here to provide information and guidance specifically on legal matters based on Indian laws and jurisdiction. Please feel free to ask about any specific legal queries you may have, whether they're related to personal matters, business law, property disputes, criminal law, family law, or any other area of interest. I'll do my best to help!"
       },
       {
         role: "user",
-        parts: [
-          {
-            text: inputText
-          }
-        ]
+        content: "Give me the replies that are human understandable and like a professional legal expet."
+      },
+      {
+        role: "assistant",
+        content: "Absolutely! I'll provide clear, concise, and professional responses to your legal inquiries. Please go ahead and ask your questions, and I will ensure the information is accessible and easy to understand."
+      },
+      {
+        role: "user",
+        content: inputText
       }
-    ]
+    ],
+    model: "gpt-4o-mini",
+    temperature: 1,
+    max_tokens: 4096,
+    top_p: 1
   };
 
   try {
     const response = await fetch(API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_KEY}`
+      },
       body: JSON.stringify(payload)
     });
 
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to generate response');
+    }
+
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Failed to generate response');
+    return data.choices?.[0]?.message?.content || "No response from server";
 
-    const apiResponse = data.candidates[0].content.parts[0].text;
-
-    return apiResponse || "No response from server";
   } catch (error) {
     console.error("Error generating content from server:", error);
-    alert(`Error generating content: ${error.message}`);
-    return "Error generating response";
+    throw new Error(`Error generating content: ${error.message}`);
   }
 }
 
@@ -193,10 +197,21 @@ playPauseButton.addEventListener("click", () => {
 
 function removeFormatting(text) {
   return text
-    .replace(/\*{1,2}/g, '')
-    .replace(/_{1,2}/g, '')
-    .replace(/`+/g, '')
-    .replace(/<\/?[^>]+(>|$)/g, '');
+    .replace(/\*{1,3}(.*?)\*{1,3}/g, '$1')
+    .replace(/_{1,3}(.*?)_{1,3}/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/!\[.*?\]\(.*?\)/g, '')
+    .replace(/\[.*?\]\(.*?\)/g, '')
+    .replace(/`{1,3}(.*?)`{1,3}/g, '$1')
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/<\/?[^>]+(>|$)/g, '')
+    .replace(/&[^;\s]+;/g, '')
+    .replace(/^>\s+/gm, '')
+    .replace(/^---$/gm, '')
+    .replace(/^\s*([-*+]|\d+\.)\s+/gm, '')
+    .replace(/\|.*?\|/g, '')
+    .replace(/\s\s+/g, ' ')
+    .trim();
 }
 
 // Chat functionality
@@ -208,16 +223,38 @@ document.addEventListener('DOMContentLoaded', () => {
   const quickReplyButtons = document.querySelectorAll('.quick-reply-btn');
 
   // Helper function to display the AI response in real-time (typing effect)
-  function typeMessage(targetElement, message, delay = 20) {
-    let i = 0;
-    const typingInterval = setInterval(() => {
-      if (i < message.length) {
-        targetElement.textContent += message.charAt(i);
-        i++;
-      } else {
-        clearInterval(typingInterval);
+  function typeMessage(targetElement, message, typingSpeed = 50) {
+    let index = 0;
+    let accumulatedText = '';
+
+    function typeNextChunk() {
+      const nextSpace = message.indexOf(' ', index + 1);
+      const nextChunk = nextSpace === -1 ? message.length : nextSpace;
+      accumulatedText = message.slice(0, nextChunk + 1);
+
+      targetElement.innerHTML = marked?.parse(accumulatedText) || accumulatedText;
+
+      index = nextChunk + 1;
+      if (index < message.length) {
+        setTimeout(typeNextChunk, typingSpeed);
       }
-    }, delay);
+    }
+    typeNextChunk();
+  }
+
+  function calculateTypingDelay(messageLength) {
+    if (messageLength <= 30) {
+      return 35;
+    } else if (messageLength <= 100) {
+      return 25;
+    } else if (messageLength <= 300) {
+      return 15;
+    } else if (messageLength <= 600) {
+      return 10;
+    } else {
+      return 5;
+    }
+
   }
 
   function appendMessage(content, role) {
@@ -256,16 +293,16 @@ document.addEventListener('DOMContentLoaded', () => {
       // Like button functionality
       buttonsDiv.querySelector('.like-btn').addEventListener('click', () => {
         const likeBtn = buttonsDiv.querySelector('.like-btn');
-        likeBtn.style.color = 'blue'; // Change color to indicate like
-        likeBtn.disabled = true; // Disable button after liking
+        likeBtn.style.color = 'blue';
+        likeBtn.disabled = true;
       });
 
       // Dislike button functionality
       buttonsDiv.querySelector('.dislike-btn').addEventListener('click', () => {
         const dislikeBtn = buttonsDiv.querySelector('.dislike-btn');
-        dislikeBtn.style.color = 'red'; // Change color to indicate dislike
-        dislikeBtn.disabled = true; // Disable button after disliking
-        openReportModal(content); // Open report modal
+        dislikeBtn.style.color = 'red';
+        dislikeBtn.disabled = true;
+        openReportModal(content);
       });
     }
 
@@ -273,9 +310,9 @@ document.addEventListener('DOMContentLoaded', () => {
     chatBody.scrollTop = chatBody.scrollHeight;
 
     if (role === 'ai') {
-      typeMessage(bubbleDiv, content); // Show AI message in typing effect
+      typeMessage(bubbleDiv, content, calculateTypingDelay(content.length));
     } else {
-      bubbleDiv.textContent = content; // Show user message immediately
+      bubbleDiv.textContent = content;
     }
   }
 
@@ -320,64 +357,85 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function sendMessage(inputText) {
-    appendMessage(inputText, 'user');
-    hideChatContainer(); // Hide the chat-container after sending the first message
-
-    const API_KEY = "AIzaSyAXLx8gB48tMR7WCT-1YIdXAYyIwMK5s28";
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
-
-    // Prepare the request payload
-    const payload = {
-      contents: [
-        {
-          role: "user",
-          parts: [
-            {
-              text: "As a renowned Indian lawyer with over a decade of experience in legal practice, you are here to provide expert legal advice in accordance with Indian laws and jurisdiction. Feel free to seek guidance on any legal matters you may have."
-            }
-          ]
-        },
-        {
-          role: "model",
-          parts: [
-            {
-              text: "I understand. I am ready to assist you with your legal questions based on Indian laws and jurisdiction. Please tell me about your legal matter, and I will do my best to provide you with accurate and helpful information."
-            }
-          ]
-        },
-        {
-          role: "user",
-          parts: [
-            {
-              text: inputText
-            }
-          ]
-        }
-      ]
-    };
+    // Input validation
+    if (!inputText?.trim()) {
+      throw new Error('Input text is required');
+    }
 
     try {
+      // Display user message
+      appendMessage(inputText, 'user');
+
+      // Hide chat container
+      hideChatContainer();
+
+      const API_KEY = process.env.API_KEY;
+      const API_URL = "https://models.inference.ai.azure.com/chat/completions";
+
+      // Prepare the request payload
+      const payload = {
+        messages: [
+          {
+            role: "system",
+            content: "As a renowned Indian lawyer with over a decade of experience in legal practice, you are here to provide expert legal advice in accordance with Indian laws and jurisdiction. Feel free to seek guidance on any legal matters you may have."
+          },
+          {
+            role: "assistant",
+            content: "I'm here to provide information and guidance specifically on legal matters based on Indian laws and jurisdiction. Please feel free to ask about any specific legal queries you may have, whether they're related to personal matters, business law, property disputes, criminal law, family law, or any other area of interest. I'll do my best to help!"
+          },
+          {
+            role: "user",
+            content: "Give me the replies that are human understandable and like a professional legal expet."
+          },
+          {
+            role: "assistant",
+            content: "Absolutely! I'll provide clear, concise, and professional responses to your legal inquiries. Please go ahead and ask your questions, and I will ensure the information is accessible and easy to understand."
+          },
+          {
+            role: "user",
+            content: inputText
+          }
+        ],
+        model: "gpt-4o-mini",
+        temperature: 1,
+        max_tokens: 4096,
+        top_p: 1
+      };
+
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${API_KEY}`
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      const cleanedResponse = removeFormatting(data.candidates[0].content.parts[0].text);
-      appendMessage(cleanedResponse, 'ai'); // Display AI response with typing effect
+
+      // Check if we have a valid response structure
+      if (!data?.choices?.[0]?.message?.content) {
+        throw new Error('Invalid response structure from API');
+      }
+
+      const cleanedResponse = data.choices[0].message.content;
+
+      // Display AI response
+      appendMessage(cleanedResponse, 'ai');
+
+      return cleanedResponse;
+
     } catch (error) {
-      console.error('Error:', error);
-      appendMessage('Error: Unable to fetch response.', 'ai');
+      console.error('Error in sendMessage:', error);
+      appendMessage('Error: Unable to fetch response. Please try again later.', 'ai');
+      throw error;
     }
   }
-
 
   // Send message when the user types and clicks "Send"
   sendBtn.addEventListener('click', () => {
