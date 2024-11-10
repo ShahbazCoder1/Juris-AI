@@ -3,10 +3,10 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # Change this to your default branch if it's not 'main'
+      - main
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,17 +16,12 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '16'  # Specify the Node.js version you need
+        node-version: '16'
 
     - name: Install dependencies
       run: npm ci
 
-    - name: Build project
-      run: npm run build  # Make sure this is the correct build command
-
     - name: Deploy to GitHub Pages
       env:
-        GH_TOKEN: ${{ secrets.API_KEY }}  # Ensure 'API_KEY' is correctly set in the repository secrets
-      run: |
-        echo "Deploying to GitHub Pages"
-        npx gh-pages -d dist  
+        GH_TOKEN: ${{ secrets.API_KEY }}
+      run: npm run deploy
