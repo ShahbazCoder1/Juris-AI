@@ -369,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Hide chat container
       hideChatContainer();
 
-      const API_KEY = process.env.GH_TOKEN;
+      const API_KEY = process.env.API_KEY;
       console.log("api key", API_KEY);
       const API_URL = "https://models.inference.ai.azure.com/chat/completions";
 

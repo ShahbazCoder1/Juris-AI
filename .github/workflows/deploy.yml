@@ -28,5 +28,5 @@ jobs:
 
     - name: Deploy to GitHub Pages
       env:
-        GH_TOKEN: ${{ secrets.API_KEY }}  # Ensure 'API_KEY' is set in the repository secrets
+        API_KEY: ${{ secrets.API_KEY }}  # Ensure 'API_KEY' is set in the repository secrets
       run: npm run deploy
