@@ -89,46 +89,59 @@ recognition.onerror = (event) => {
 };
 
 async function generateAPIResponse(inputText) {
-  const API_KEY = " ";
-  const API_URL = "https://models.inference.ai.azure.com/chat/completions";
+  const API_KEY = "AIzaSyAXLx8gB48tMR7WCT-1YIdXAYyIwMK5s28";
+  const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key=${API_KEY}`;
 
   // Prepare the request payload
   const payload = {
-    messages: [
+    contents: [
       {
-        role: "system",
-        content: "As a renowned Indian lawyer with over a decade of experience in legal practice, you are here to provide expert legal advice in accordance with Indian laws and jurisdiction. Feel free to seek guidance on any legal matters you may have. You are also able to comunicate in English, Hindi and Hindlish"
+        role: "user",
+        parts: [
+          {
+            text: "As a renowned Indian lawyer with over a decade of experience in legal practice, you are here to provide expert legal advice in accordance with Indian laws and jurisdiction. Feel free to seek guidance on any legal matters you may have."
+          }
+        ]
       },
       {
-        role: "assistant",
-        content: "I'm here to provide information and guidance specifically on legal matters based on Indian laws and jurisdiction. Please feel free to ask about any specific legal queries you may have, whether they're related to personal matters, business law, property disputes, criminal law, family law, or any other area of interest. I'll do my best to help!"
+        role: "model",
+        parts: [
+          {
+            text: "I'm here to provide information and guidance specifically on legal matters based on Indian laws and jurisdiction. Please feel free to ask about any specific legal queries you may have, whether they're related to personal matters, business law, property disputes, criminal law, family law, or any other area of interest. I'll do my best to help!"
+          }
+        ]
       },
       {
         role: "user",
-        content: "Give me the replies that are human understandable and like a professional legal expet."
+        parts: [
+          {
+            text: "Give me the replies that are human understandable and like a professional legal expet."
+          }
+        ]
       },
       {
-        role: "assistant",
-        content: "Absolutely! I'll provide clear, concise, and professional responses to your legal inquiries. Please go ahead and ask your questions, and I will ensure the information is accessible and easy to understand."
+        role: "model",
+        parts: [
+          {
+            text: "Absolutely! I'll provide clear, concise, and professional responses to your legal inquiries. Please go ahead and ask your questions, and I will ensure the information is accessible and easy to understand."
+          }
+        ]
       },
       {
         role: "user",
-        content: inputText
+        parts: [
+          {
+            text: inputText
+          }
+        ]
       }
-    ],
-    model: "gpt-4o-mini",
-    temperature: 1,
-    max_tokens: 4096,
-    top_p: 1
+    ]
   };
 
   try {
     const response = await fetch(API_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${API_KEY}`
-      },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(payload)
     });
 
@@ -138,7 +151,7 @@ async function generateAPIResponse(inputText) {
     }
 
     const data = await response.json();
-    return data.choices?.[0]?.message?.content || "No response from server";
+    return data.candidates[0].content.parts[0].text;
 
   } catch (error) {
     console.error("Error generating content from server:", error);
@@ -368,47 +381,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Hide chat container
       hideChatContainer();
-      
-      const API_KEY = process.env.API_KEY;
-      console.log("api key", API_KEY);
-      const API_URL = "https://models.inference.ai.azure.com/chat/completions";
+
+      const API_KEY = "AIzaSyAXLx8gB48tMR7WCT-1YIdXAYyIwMK5s28";
+      const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key=${API_KEY}`;
 
       // Prepare the request payload
       const payload = {
-        messages: [
+        contents: [
           {
-            role: "system",
-            content: "As a renowned Indian lawyer with over a decade of experience in legal practice, you are here to provide expert legal advice in accordance with Indian laws and jurisdiction. Feel free to seek guidance on any legal matters you may have."
+            role: "user",
+            parts: [
+              {
+                text: "As a renowned Indian lawyer with over a decade of experience in legal practice, you are here to provide expert legal advice in accordance with Indian laws and jurisdiction. Feel free to seek guidance on any legal matters you may have."
+              }
+            ]
           },
           {
-            role: "assistant",
-            content: "I'm here to provide information and guidance specifically on legal matters based on Indian laws and jurisdiction. Please feel free to ask about any specific legal queries you may have, whether they're related to personal matters, business law, property disputes, criminal law, family law, or any other area of interest. I'll do my best to help!"
+            role: "model",
+            parts: [
+              {
+                text: "I'm here to provide information and guidance specifically on legal matters based on Indian laws and jurisdiction. Please feel free to ask about any specific legal queries you may have, whether they're related to personal matters, business law, property disputes, criminal law, family law, or any other area of interest. I'll do my best to help!"
+              }
+            ]
           },
           {
             role: "user",
-            content: "Give me the replies that are human understandable and like a professional legal expet."
+            parts: [
+              {
+                text: "Give me the replies that are human understandable and like a professional legal expet."
+              }
+            ]
           },
           {
-            role: "assistant",
-            content: "Absolutely! I'll provide clear, concise, and professional responses to your legal inquiries. Please go ahead and ask your questions, and I will ensure the information is accessible and easy to understand."
+            role: "model",
+            parts: [
+              {
+                text: "Absolutely! I'll provide clear, concise, and professional responses to your legal inquiries. Please go ahead and ask your questions, and I will ensure the information is accessible and easy to understand."
+              }
+            ]
           },
           {
             role: "user",
-            content: inputText
+            parts: [
+              {
+                text: inputText
+              }
+            ]
           }
-        ],
-        model: "gpt-4o-mini",
-        temperature: 1,
-        max_tokens: 4096,
-        top_p: 1
+        ]
       };
 
       const response = await fetch(API_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${API_KEY}`
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
 
@@ -420,11 +445,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await response.json();
 
       // Check if we have a valid response structure
-      if (!data?.choices?.[0]?.message?.content) {
+      if (!data.candidates[0].content.parts[0].text) {
         throw new Error('Invalid response structure from API');
       }
 
-      const cleanedResponse = data.choices[0].message.content;
+      const cleanedResponse = data.candidates[0].content.parts[0].text;
 
       // Display AI response
       appendMessage(cleanedResponse, 'ai');
